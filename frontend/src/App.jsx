@@ -1,17 +1,27 @@
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import Login from "./components/login";
+import Register from "./components/register";
+import Dashboard from "./components/dashboard";
+
+import "./App.css";
+
 function App() {
   return (
-    <div>
-      <h1>🛍️ StudentMart</h1>
+    <BrowserRouter>
+      <Routes>
 
-      <h2>Welcome to StudentMart</h2>
+        <Route path="/" element={<Navigate to="/login" />} />
 
-      <h3>Your Online Shopping Application</h3>
+        <Route path="/register" element={<Register />} />
 
-      <p>👩‍🎓 Name: Rakshitha P</p>
+        <Route path="/login" element={<Login />} />
 
-      <p>🆔 USN: 1AT24CS169</p>
-    </div>
-  )
+        <Route path="/dashboard" element={<Dashboard />} />
+
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
