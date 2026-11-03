@@ -25,7 +25,8 @@ router.post("/register", async (req, res) => {
         if (!name || !email || !password) {
 
             return res.status(400).json({
-                message: "All fields are required"
+                message:
+                    "All fields are required"
             });
 
         }
@@ -39,7 +40,8 @@ router.post("/register", async (req, res) => {
         if (!emailPattern.test(email)) {
 
             return res.status(400).json({
-                message: "Please enter a valid email"
+                message:
+                    "Please enter a valid email"
             });
 
         }
@@ -81,16 +83,21 @@ router.post("/register", async (req, res) => {
         // Create user
 
         await User.create({
-            name: name,
-            email: email,
+
+            name,
+
+            email,
+
             password: hashedPassword
+
         });
 
 
-        // Send response
-
         res.status(201).json({
-            message: "Registration successful"
+
+            message:
+                "Registration successful"
+
         });
 
     }
@@ -100,7 +107,10 @@ router.post("/register", async (req, res) => {
         console.error(error);
 
         res.status(500).json({
-            message: "Server error"
+
+            message:
+                "Server error"
+
         });
 
     }
@@ -127,8 +137,10 @@ router.post("/login", async (req, res) => {
         if (!email || !password) {
 
             return res.status(400).json({
+
                 message:
                     "Email and password are required"
+
             });
 
         }
@@ -143,8 +155,10 @@ router.post("/login", async (req, res) => {
         if (!user) {
 
             return res.status(400).json({
+
                 message:
                     "Invalid email or password"
+
             });
 
         }
@@ -162,23 +176,30 @@ router.post("/login", async (req, res) => {
         if (!isMatch) {
 
             return res.status(400).json({
+
                 message:
                     "Invalid email or password"
+
             });
 
         }
 
 
-        // Login successful
+        // Send user details
 
         res.json({
 
-            message: "Login successful",
+            message:
+                "Login successful",
 
             user: {
+
                 id: user._id,
+
                 name: user.name,
+
                 email: user.email
+
             }
 
         });
@@ -190,7 +211,10 @@ router.post("/login", async (req, res) => {
         console.error(error);
 
         res.status(500).json({
-            message: "Server error"
+
+            message:
+                "Server error"
+
         });
 
     }

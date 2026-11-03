@@ -1,73 +1,147 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import "../styles/Dashboard.css";
 
-function Dashboard() {
-  const navigate = useNavigate();
+function Dashboard({ onLogout }) {
 
-  const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const savedUser = localStorage.getItem("user");
+    useEffect(() => {
 
-    if (!token || !savedUser) {
-      navigate("/login");
-      return;
-    }
+        const storedUser =
+            localStorage.getItem("user");
 
-    setUser(JSON.parse(savedUser));
-  }, [navigate]);
+        if (storedUser) {
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+            setUser(
+                JSON.parse(storedUser)
+            );
 
-    navigate("/login");
-  };
+        }
 
-  return (
-    <div className="dashboard">
+    }, []);
 
-      <nav className="navbar">
+    if (!user) {
 
-        <h2>User Authentication</h2>
+        return (
+            <div className="dashboard-page">
 
-        <button onClick={handleLogout}>
-          Logout
-        </button>
+                <div className="dashboard-card">
 
-      </nav>
+                    <h2>
+                        No user logged in
+                    </h2>
 
-      <div className="dashboard-content">
-
-        {user && (
-          <>
-            <h1>Welcome, {user.name}!</h1>
-
-            <p>
-              You have successfully logged in.
-            </p>
-
-            <div className="user-card">
-
-              <h3>User Information</h3>
-
-              <p>
-                <strong>Name:</strong> {user.name}
-              </p>
-
-              <p>
-                <strong>Email:</strong> {user.email}
-              </p>
+                </div>
 
             </div>
-          </>
-        )}
+        );
+    }
 
-      </div>
+    return (
 
-    </div>
-  );
+        <div className="dashboard-page">
+
+            <nav className="dashboard-navbar">
+
+                <div className="dashboard-logo">
+                    StudentMart
+                </div>
+
+                <button
+                    onClick={onLogout}
+                    className="nav-logout-button"
+                >
+                    Logout
+                </button>
+
+            </nav>
+
+
+            <main className="dashboard-content">
+
+                <div className="welcome-section">
+
+                    <h1>
+                        Welcome, {user.name}! 👋
+                    </h1>
+
+                    <p>
+                        You have successfully logged
+                        into your StudentMart account.
+                    </p>
+
+                </div>
+
+
+                <div className="dashboard-card">
+
+                    <h2>
+                        My Profile
+                    </h2>
+
+                    <div className="profile-icon">
+                        {user.name
+                            .charAt(0)
+                            .toUpperCase()}
+                    </div>
+
+
+                    <div className="profile-details">
+
+                        <div className="profile-row">
+
+                            <span>
+                                Name
+                            </span>
+
+                            <strong>
+                                {user.name}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="profile-row">
+
+                            <span>
+                                Email
+                            </span>
+
+                            <strong>
+                                {user.email}
+                            </strong>
+
+                        </div>
+
+
+                        <div className="profile-row">
+
+                            <span>
+                                User ID
+                            </span>
+
+                            <strong>
+                                {user.id}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        onClick={onLogout}
+                        className="dashboard-logout-button"
+                    >
+                        Logout
+                    </button>
+
+                </div>
+
+            </main>
+
+        </div>
+    );
 }
 
 export default Dashboard;

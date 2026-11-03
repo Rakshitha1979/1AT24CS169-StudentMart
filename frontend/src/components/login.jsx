@@ -1,120 +1,164 @@
+
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import "../styles/Login.css";
 
-function Login() {
-  const navigate = useNavigate();
+function Login({ onLoginSuccess, onRegister }) {
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+    const [form, setForm] = useState({
+        email: "",
+        password: ""
+    });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const [message, setMessage] = useState("");
 
-    setMessage("");
+    const handleChange = (e) => {
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        });
+    };
 
-    // Validation
-    if (!email || !password) {
-      setMessage("Please enter email and password");
-      return;
-    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setMessage("");
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        try {
+            const response = await fetch(
+                "http://localhost:5002/api/auth/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(form)
+                }
+            );
 
-    if (!emailPattern.test(email)) {
-      setMessage("Please enter a valid email");
-      return;
-    }
+            const data = await response.json();
 
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/login",
-        {
-          method: "POST",
+            if (!response.ok) {
+                setMessage(data.message || "Login failed");
+                return;
+            }
 
-          headers: {
-            "Content-Type": "application/json",
-          },
+            if (data.token) {
+                localStorage.setItem("token", data.token);
+            }
 
-          body: JSON.stringify({
-            email,
-            password,
-          }),
+            localStorage.setItem(
+                "user",
+                JSON.stringify(data.user)
+            );
+
+            setMessage(data.message || "Login successful!");
+
+            onLoginSuccess();
+
+        } catch (error) {
+            console.error(error);
+            setMessage("Unable to connect to server");
         }
-      );
+    };
 
-      const data = await response.json();
+    return (
+        <div className="login-page">
 
-      if (!response.ok) {
-        setMessage(data.message);
-        return;
-      }
+            <div className="login-decoration decoration-one">✨</div>
+            <div className="login-decoration decoration-two">🛍️</div>
+            <div className="login-decoration decoration-three">🎓</div>
 
-      // Store login information
-      localStorage.setItem("token", data.token);
+            <div className="login-card">
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(data.user)
-      );
+                <div className="login-logo">
+                    🛒 StudentMart
+                </div>
 
-      navigate("/dashboard");
+                <div className="login-welcome-icon">
+                    👋
+                </div>
 
-    } catch (error) {
-      setMessage("Unable to connect to server");
-    }
-  };
+                <h1>Hey there, Welcome Back!</h1>
 
-  return (
-    <div className="auth-container">
+                <p className="login-subtitle">
+                    Ready to shop? Login to your StudentMart account ✨
+                </p>
 
-      <div className="auth-box">
+                <form onSubmit={handleSubmit}>
 
-        <h1>Login</h1>
+                    <div className="login-input-group">
 
-        <p>Login to your account</p>
+                        <label htmlFor="email">
+                            📧 Email Address
+                        </label>
 
-        {message && (
-          <div className="error">
-            {message}
-          </div>
-        )}
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            value={form.email}
+                            onChange={handleChange}
+                            required
+                        />
 
-        <form onSubmit={handleSubmit}>
+                    </div>
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-          />
+                    <div className="login-input-group">
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
-          />
+                        <label htmlFor="password">
+                            🔒 Password
+                        </label>
 
-          <button type="submit">
-            Login
-          </button>
+                        <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            value={form.password}
+                            onChange={handleChange}
+                            required
+                        />
 
-        </form>
+                    </div>
 
-        <p>
-          Don't have an account?
-          <Link to="/register"> Register</Link>
-        </p>
+                    {message && (
+                        <p className="login-message">
+                            {message}
+                        </p>
+                    )}
 
-      </div>
+                    <button
+                        type="submit"
+                        className="login-button"
+                    >
+                        Login to StudentMart →
+                    </button>
 
-    </div>
-  );
+                </form>
+
+                <div className="register-link">
+
+                    <span>
+                        New to StudentMart?{" "}
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={onRegister}
+                    >
+                        Create Account
+                    </button>
+
+                </div>
+
+                <p className="login-footer">
+                    Made for students, made for you 💙
+                </p>
+
+            </div>
+
+        </div>
+    );
 }
 
 export default Login;

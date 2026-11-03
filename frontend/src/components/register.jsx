@@ -1,151 +1,166 @@
+
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import "../styles/Register.css";
 
-function Register() {
-  const navigate = useNavigate();
+function Register({ onRegisterSuccess, onLogin }) {
 
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const [message, setMessage] = useState("");
-
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
+    const [form, setForm] = useState({
+        name: "",
+        email: "",
+        password: ""
     });
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const [message, setMessage] = useState("");
 
-    setMessage("");
+    const handleChange = (e) => {
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        });
+    };
 
-    // Frontend validation
-    if (!form.name || !form.email || !form.password) {
-      setMessage("Please fill all fields");
-      return;
-    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setMessage("");
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        try {
+            const response = await fetch(
+                "http://localhost:5002/api/auth/register",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(form)
+                }
+            );
 
-    if (!emailPattern.test(form.email)) {
-      setMessage("Please enter a valid email");
-      return;
-    }
+            const data = await response.json();
 
-    if (form.password.length < 6) {
-      setMessage("Password must contain at least 6 characters");
-      return;
-    }
+            if (response.ok) {
+                setMessage(data.message);
 
-    if (form.password !== form.confirmPassword) {
-      setMessage("Passwords do not match");
-      return;
-    }
+                setForm({
+                    name: "",
+                    email: "",
+                    password: ""
+                });
 
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/register",
-        {
-          method: "POST",
+                setTimeout(() => {
+                    onRegisterSuccess();
+                }, 1000);
 
-          headers: {
-            "Content-Type": "application/json",
-          },
+            } else {
+                setMessage(data.message);
+            }
 
-          body: JSON.stringify({
-            name: form.name,
-            email: form.email,
-            password: form.password,
-          }),
+        } catch (error) {
+            console.error(error);
+            setMessage("Unable to connect to server");
         }
-      );
+    };
 
-      const data = await response.json();
+    return (
+        <div className="register-page">
 
-      if (!response.ok) {
-        setMessage(data.message);
-        return;
-      }
+            <div className="register-left">
+                <div className="brand-content">
+                    <h1>StudentMart</h1>
 
-      alert("Registration successful!");
+                    <h2>
+                        Your Student Shopping
+                        Destination
+                    </h2>
 
-      navigate("/login");
+                    <p>
+                        Create your account and
+                        start exploring StudentMart.
+                    </p>
+                </div>
+            </div>
 
-    } catch (error) {
-      setMessage("Unable to connect to server");
-    }
-  };
+            <div className="register-right">
+                <div className="register-card">
 
-  return (
-    <div className="auth-container">
+                    <h1>Create Account</h1>
 
-      <div className="auth-box">
+                    <p className="subtitle">
+                        Register to continue
+                    </p>
 
-        <h1>Create Account</h1>
+                    <form onSubmit={handleSubmit}>
 
-        <p>Register a new user</p>
+                        <div className="input-group">
+                            <label>Full Name</label>
 
-        {message && (
-          <div className="error">
-            {message}
-          </div>
-        )}
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Enter your full name"
+                                value={form.name}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
 
-        <form onSubmit={handleSubmit}>
+                        <div className="input-group">
+                            <label>Email Address</label>
 
-          <input
-            type="text"
-            name="name"
-            placeholder="Enter your name"
-            value={form.name}
-            onChange={handleChange}
-          />
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                value={form.email}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={form.email}
-            onChange={handleChange}
-          />
+                        <div className="input-group">
+                            <label>Password</label>
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            value={form.password}
-            onChange={handleChange}
-          />
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                value={form.password}
+                                onChange={handleChange}
+                                required
+                                minLength="6"
+                            />
+                        </div>
 
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm password"
-            value={form.confirmPassword}
-            onChange={handleChange}
-          />
+                        {message && (
+                            <p className="register-message">
+                                {message}
+                            </p>
+                        )}
 
-          <button type="submit">
-            Register
-          </button>
+                        <button
+                            type="submit"
+                            className="register-button"
+                        >
+                            Create Account
+                        </button>
 
-        </form>
+                    </form>
 
-        <p>
-          Already have an account?
-          <Link to="/login"> Login</Link>
-        </p>
+                    <div className="login-link">
+                        <span>Already have an account? </span>
 
-      </div>
+                        <button
+                            type="button"
+                            onClick={onLogin}
+                        >
+                            Login
+                        </button>
+                    </div>
 
-    </div>
-  );
+                </div>
+            </div>
+
+        </div>
+    );
 }
 
 export default Register;

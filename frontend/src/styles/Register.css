@@ -1,0 +1,284 @@
+
+* {
+    box-sizing: border-box;
+}
+
+.register-page {
+    min-height: 100vh;
+    display: flex;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #dbeafe, #e9d5ff, #c7d2fe);
+    overflow: hidden;
+}
+
+/* Left branding section */
+
+.register-left {
+    width: 45%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 55px;
+    color: white;
+    background: linear-gradient(145deg, #312e81, #4f46e5, #9333ea);
+    position: relative;
+    overflow: hidden;
+}
+
+.register-left::before,
+.register-left::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.10);
+}
+
+.register-left::before {
+    width: 420px;
+    height: 420px;
+    top: -150px;
+    left: -130px;
+}
+
+.register-left::after {
+    width: 350px;
+    height: 350px;
+    bottom: -140px;
+    right: -100px;
+}
+
+.brand-content {
+    max-width: 430px;
+    text-align: left;
+    position: relative;
+    z-index: 1;
+}
+
+.brand-content h1 {
+    color: #ffffff;
+    font-size: 49px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 18px;
+}
+
+.brand-content h1::before {
+    content: "🛒 ";
+}
+
+.brand-content h2 {
+    color: #ffffff;
+    font-size: 26px;
+    margin-bottom: 18px;
+}
+
+.brand-content p {
+    color: #e0e7ff;
+    font-size: 17px;
+    line-height: 1.9;
+}
+
+/* Decorative symbols */
+
+.register-left .brand-content::after {
+    content: "✨ 🛍️ 🎓";
+    display: block;
+    font-size: 34px;
+    margin-top: 35px;
+    letter-spacing: 10px;
+}
+
+/* Right registration section */
+
+.register-right {
+    width: 55%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.register-card {
+    width: 100%;
+    max-width: 470px;
+    padding: 42px;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 25px;
+    box-shadow: 0 20px 60px rgba(79, 70, 229, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.register-card h1 {
+    color: #25205b;
+    font-size: 32px;
+    font-weight: 800;
+    text-align: left;
+    margin: 0 0 10px;
+}
+
+.register-card h1::before {
+    content: "✨ ";
+}
+
+.subtitle {
+    color: #77738f;
+    text-align: left;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+/* Input fields */
+
+.input-group {
+    margin-bottom: 21px;
+}
+
+.input-group label {
+    display: block;
+    color: #37345c;
+    font-size: 14px;
+    font-weight: 650;
+    margin-bottom: 9px;
+}
+
+/* Icons beside labels - based on field order */
+
+.input-group:nth-of-type(1) label::before {
+    content: "👤 ";
+}
+
+.input-group:nth-of-type(2) label::before {
+    content: "📧 ";
+}
+
+.input-group:nth-of-type(3) label::before {
+    content: "🔒 ";
+}
+
+.input-group:nth-of-type(4) label::before {
+    content: "🔐 ";
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 16px;
+    border: 1px solid #d9d6f2;
+    border-radius: 12px;
+    background: #f8f7ff;
+    font-size: 15px;
+    color: #29264d;
+    outline: none;
+    transition: 0.25s ease;
+}
+
+.input-group input::placeholder {
+    color: #aaa6c2;
+}
+
+.input-group input:focus {
+    border-color: #7665e8;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(118, 101, 232, 0.12);
+}
+
+/* Create Account button */
+
+.register-button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    background: linear-gradient(110deg, #4f46e5, #9333ea);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.register-button::before {
+    content: "🛍️ ";
+}
+
+.register-button::after {
+    content: " ✨";
+}
+
+.register-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 22px rgba(79, 70, 229, 0.3);
+}
+
+/* Registration message */
+
+.register-message {
+    text-align: center;
+    margin: 14px 0;
+    font-size: 14px;
+}
+
+/* Responsive design */
+
+@media (max-width: 768px) {
+    .register-page {
+        flex-direction: column;
+    }
+
+    .register-left,
+    .register-right {
+        width: 100%;
+    }
+
+    .register-left {
+        min-height: 270px;
+        padding: 35px;
+    }
+
+    .brand-content h1 {
+        font-size: 36px;
+    }
+
+    .brand-content h2 {
+        font-size: 22px;
+    }
+
+    .register-right {
+        padding: 30px 18px;
+    }
+
+    .register-card {
+        padding: 30px 24px;
+    }
+}
+
+.login-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 25px;
+    color: #77738f;
+    font-size: 14px;
+}
+
+.register-card .login-link button {
+    padding: 4px 8px;
+    border: none;
+    outline: none;
+    background: transparent !important;
+    color: #6d28d9 !important;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.register-card .login-link button:hover {
+    color: #4f46e5 !important;
+    text-decoration: underline;
+}

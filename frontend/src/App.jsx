@@ -1,27 +1,54 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import Login from "./components/login";
+import { useState } from "react";
+
 import Register from "./components/register";
-import Dashboard from "./components/dashboard";
+import Login from "./components/login";
+import Dashboard from "./components/Dashboard";
 
 import "./App.css";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
+    const [page, setPage] = useState("login");
 
-        <Route path="/" element={<Navigate to="/login" />} />
+    const handleRegisterSuccess = () => {
+        setPage("login");
+    };
 
-        <Route path="/register" element={<Register />} />
+    const handleLoginSuccess = () => {
+        setPage("dashboard");
+    };
 
-        <Route path="/login" element={<Login />} />
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setPage("login");
+    };
 
-        <Route path="/dashboard" element={<Dashboard />} />
+    return (
+        <div className="app">
 
-      </Routes>
-    </BrowserRouter>
-  );
+            {page === "register" && (
+                <Register
+                    onRegisterSuccess={handleRegisterSuccess}
+                    onLogin={() => setPage("login")}
+                />
+            )}
+
+            {page === "login" && (
+                <Login
+                    onLoginSuccess={handleLoginSuccess}
+                    onRegister={() => setPage("register")}
+                />
+            )}
+
+            {page === "dashboard" && (
+                <Dashboard
+                    onLogout={handleLogout}
+                />
+            )}
+
+        </div>
+    );
 }
 
 export default App;
