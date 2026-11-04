@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import Register from "./components/register";
 import Login from "./components/login";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/dashboard";
 
 import "./App.css";
 

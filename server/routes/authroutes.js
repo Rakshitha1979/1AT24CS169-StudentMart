@@ -1,225 +1,137 @@
+
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
 const router = express.Router();
 
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// ==============================
 // REGISTER
-// ==============================
-
 router.post("/register", async (req, res) => {
-
     try {
+        let { name, email, password } = req.body;
 
-        const {
-            name,
-            email,
-            password
-        } = req.body;
-
-
-        // Check empty fields
+        name = typeof name === "string" ? name.trim() : "";
+        email = typeof email === "string"
+            ? email.trim().toLowerCase()
+            : "";
 
         if (!name || !email || !password) {
-
             return res.status(400).json({
-                message:
-                    "All fields are required"
+                message: "All fields are required"
             });
-
         }
-
-
-        // Validate email
-
-        const emailPattern =
-            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!emailPattern.test(email)) {
-
             return res.status(400).json({
-                message:
-                    "Please enter a valid email"
+                message: "Please enter a valid email"
             });
-
         }
 
-
-        // Validate password
-
-        if (password.length < 6) {
-
+        if (typeof password !== "string" || password.length < 6) {
             return res.status(400).json({
-                message:
-                    "Password must be at least 6 characters"
+                message: "Password must be at least 6 characters"
             });
-
         }
 
-
-        // Check existing user
-
-        const existingUser =
-            await User.findOne({ email });
+        const existingUser = await User.findOne({ email });
 
         if (existingUser) {
-
-            return res.status(400).json({
-                message:
-                    "Email already registered"
+            return res.status(409).json({
+                message: "Email already registered"
             });
-
         }
 
-
-        // Hash password
-
-        const hashedPassword =
-            await bcrypt.hash(password, 10);
-
-
-        // Create user
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({
-
             name,
-
             email,
-
             password: hashedPassword
-
         });
 
-
-        res.status(201).json({
-
-            message:
-                "Registration successful"
-
+        return res.status(201).json({
+            message: "Registration successful"
         });
 
+    } catch (error) {
+        console.error("Registration error:", error);
+
+        if (error.code === 11000) {
+            return res.status(409).json({
+                message: "Email already registered"
+            });
+        }
+
+        return res.status(500).json({
+            message: "Server error"
+        });
     }
-
-    catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-
-            message:
-                "Server error"
-
-        });
-
-    }
-
 });
 
-
-// ==============================
 // LOGIN
-// ==============================
-
 router.post("/login", async (req, res) => {
-
     try {
+        let { email, password } = req.body;
 
-        const {
-            email,
-            password
-        } = req.body;
-
-
-        // Check fields
+        email = typeof email === "string"
+            ? email.trim().toLowerCase()
+            : "";
 
         if (!email || !password) {
-
             return res.status(400).json({
-
-                message:
-                    "Email and password are required"
-
+                message: "Email and password are required"
             });
-
         }
 
-
-        // Find user
-
-        const user =
-            await User.findOne({ email });
-
+        const user = await User.findOne({ email });
 
         if (!user) {
-
-            return res.status(400).json({
-
-                message:
-                    "Invalid email or password"
-
+            return res.status(401).json({
+                message: "Invalid email or password"
             });
-
         }
 
-
-        // Compare password
-
-        const isMatch =
-            await bcrypt.compare(
-                password,
-                user.password
-            );
-
+        const isMatch = await bcrypt.compare(
+            password,
+            user.password
+        );
 
         if (!isMatch) {
-
-            return res.status(400).json({
-
-                message:
-                    "Invalid email or password"
-
+            return res.status(401).json({
+                message: "Invalid email or password"
             });
-
         }
 
+        if (!process.env.JWT_SECRET) {
+            throw new Error("JWT_SECRET is not configured");
+        }
 
-        // Send user details
+        const token = jwt.sign(
+            { userId: user._id.toString() },
+            process.env.JWT_SECRET,
+            { expiresIn: "2h" }
+        );
 
-        res.json({
-
-            message:
-                "Login successful",
-
+        return res.json({
+            message: "Login successful",
+            token,
             user: {
-
                 id: user._id,
-
                 name: user.name,
-
                 email: user.email
-
             }
-
         });
 
-    }
+    } catch (error) {
+        console.error("Login error:", error);
 
-    catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-
-            message:
-                "Server error"
-
+        return res.status(500).json({
+            message: "Server error"
         });
-
     }
-
 });
-
 
 module.exports = router;
