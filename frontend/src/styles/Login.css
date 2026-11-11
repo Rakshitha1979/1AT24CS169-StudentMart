@@ -106,6 +106,8 @@
   box-shadow: 0 0 0 4px rgba(118, 101, 232, 0.12);
 }
 
+/* Login Button */
+
 .login-button {
   width: 100%;
   padding: 15px;
@@ -131,29 +133,50 @@
   color: #4338ca;
 }
 
+/* Create Account Section */
+
 .register-link {
   margin-top: 25px;
   color: #77738f;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.register-link button {
-  color: #6d28d9;
-  font-weight: 700;
+/* Create Account Button */
+
+.login-card .register-link button {
+  display: inline-block;
+  padding: 12px 22px;
+  color: white !important;
+  background: linear-gradient(110deg, #4f46e5, #9333ea) !important;
   border: none;
-  background: none;
+  border-radius: 11px;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 5px 14px rgba(79, 70, 229, 0.2);
+  transition: all 0.3s ease;
 }
 
-.register-link button:hover {
-  text-decoration: underline;
+.login-card .register-link button:hover {
+  background: linear-gradient(110deg, #3730a3, #7e22ce) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 9px 20px rgba(79, 70, 229, 0.3);
 }
+
+/* Footer */
 
 .login-footer {
   color: #9290aa;
   font-size: 12px;
   margin-top: 25px;
 }
+
+/* Decorative Elements */
 
 .login-decoration {
   position: absolute;
@@ -181,6 +204,8 @@
   font-size: 75px;
   transform: rotate(-10deg);
 }
+
+/* Responsive Design */
 
 @media (max-width: 600px) {
   .login-card {

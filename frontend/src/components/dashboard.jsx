@@ -74,6 +74,7 @@ function Dashboard({ onLogout }) {
                     name: data.user.name,
                     email: data.user.email
                 }));
+
             } catch (err) {
                 setError(err.message || "Unable to connect to server");
             } finally {
@@ -123,6 +124,7 @@ function Dashboard({ onLogout }) {
             }
 
             setUser(data.user);
+
             setForm({
                 name: data.user.name || "",
                 email: data.user.email || "",
@@ -140,6 +142,7 @@ function Dashboard({ onLogout }) {
 
             setEditing(false);
             setMessage(data.message || "Profile updated successfully");
+
         } catch (err) {
             setError(err.message || "Unable to connect to server");
         }
@@ -185,6 +188,7 @@ function Dashboard({ onLogout }) {
             setMessage(data.message || "Password changed successfully");
 
             onLogout();
+
         } catch (err) {
             setError(err.message || "Unable to connect to server");
         }
@@ -197,10 +201,11 @@ function Dashboard({ onLogout }) {
     if (!user) {
         return (
             <div className="dashboard-page">
-        
                 <div className="dashboard-card">
                     <h2>Unable to Load Profile</h2>
-                    <p role="alert">{error || "Please log in again."}</p>
+                    <p role="alert">
+                        {error || "Please log in again."}
+                    </p>
                     <button onClick={onLogout}>Back to Login</button>
                 </div>
             </div>
@@ -210,244 +215,305 @@ function Dashboard({ onLogout }) {
     return (
         <div className="dashboard-page">
 
-            <nav className="dashboard-navbar">
-                <div className="dashboard-logo">
-                    StudentMart
-                </div>
-
-                <button
-                    onClick={onLogout}
-                    className="nav-logout-button"
-                >
-                    Logout
-                </button>
-            </nav>
-
             <main className="dashboard-content">
 
-                <div className="welcome-section">
-                    <h1>Welcome, {user.name}! 👋</h1>
-                    <p>Manage your StudentMart profile here.</p>
-                </div>
-               <div className="dashboard-navigation">
+                <div className="dashboard-layout">
 
-    <button
-        className={activeSection === "profile" ? "active" : ""}
-        onClick={() => setActiveSection("profile")}
-    >
-        <span>👤</span>
-        <span>My Profile</span>
-    </button>
+                    {/* LEFT COLUMN */}
+                    <div className="dashboard-left-column">
 
-    <button
-        className={activeSection === "products" ? "active" : ""}
-        onClick={() => setActiveSection("products")}
-    >
-        <span>🛍️</span>
-        <span>Explore Products</span>
-    </button>
+                        {/* STUDENTMART LOGO */}
+                        <nav className="dashboard-navbar">
+                            <div className="dashboard-logo">
+                                StudentMart
+                            </div>
+                        </nav>
 
-    <button
-        className={activeSection === "add" ? "active" : ""}
-        onClick={() => setActiveSection("add")}
-    >
-        <span>＋</span>
-        <span>Add Product</span>
-    </button>
+                        {/* LEFT SIDEBAR */}
+                        <aside className="dashboard-navigation">
 
-</div>
-{activeSection === "profile" && (
-                <div className="dashboard-card">
-
-                    <h2>My Profile</h2>
-
-                    <div className="profile-icon">
-                        {(user.name || "U").charAt(0).toUpperCase()}
-                    </div>
-
-                    {message && <p role="status">{message}</p>}
-                    {error && <p role="alert">{error}</p>}
-
-                    {editing ? (
-                        <form onSubmit={saveProfile}>
-
-                            <label>Full Name</label>
-                            <input
-                                name="name"
-                                value={form.name}
-                                onChange={handleChange}
-                                required
-                            />
-
-                            <label>Email</label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={form.email}
-                                onChange={handleChange}
-                                required
-                            />
-
-                            <label>Phone</label>
-                            <input
-                                type="tel"
-                                name="phone"
-                                value={form.phone}
-                                onChange={handleChange}
-                            />
-
-                            <label>Department</label>
-                            <input
-                                name="department"
-                                value={form.department}
-                                onChange={handleChange}
-                            />
-
-                            <label>Year of Study</label>
-                            <input
-                                name="year"
-                                value={form.year}
-                                onChange={handleChange}
-                            />
-
-                            <label>Address</label>
-                            <textarea
-                                name="address"
-                                value={form.address}
-                                onChange={handleChange}
-                            />
-
-                            <button type="submit">Save Changes</button>
+                            <h3>Menu</h3>
 
                             <button
-                                type="button"
+                                className={activeSection === "profile" ? "active" : ""}
                                 onClick={() => {
-                                    setEditing(false);
+                                    setActiveSection("profile");
+                                    setMessage("");
                                     setError("");
-                                    setForm({
-                                        name: user.name || "",
-                                        email: user.email || "",
-                                        phone: user.phone || "",
-                                        department: user.department || "",
-                                        year: user.year || "",
-                                        address: user.address || ""
-                                    });
                                 }}
                             >
-                                Cancel
-                            </button>
-                        </form>
-                    ) : (
-                        <div className="profile-details">
-
-                            <div className="profile-row">
-                                <span>Name</span>
-                                <strong>{user.name}</strong>
-                            </div>
-
-                            <div className="profile-row">
-                                <span>Email</span>
-                                <strong>{user.email}</strong>
-                            </div>
-
-                            <div className="profile-row">
-                                <span>Phone</span>
-                                <strong>{user.phone || "Not provided"}</strong>
-                            </div>
-
-                            <div className="profile-row">
-                                <span>Department</span>
-                                <strong>{user.department || "Not provided"}</strong>
-                            </div>
-
-                            <div className="profile-row">
-                                <span>Year</span>
-                                <strong>{user.year || "Not provided"}</strong>
-                            </div>
-
-                            <div className="profile-row">
-                                <span>Address</span>
-                                <strong>{user.address || "Not provided"}</strong>
-                            </div>
-
-                            <button onClick={() => {
-                                setMessage("");
-                                setError("");
-                                setEditing(true);
-                            }}>
-                                Edit Profile
+                                <span>👤</span>
+                                <span>My Profile</span>
                             </button>
 
+                            <button
+                                className={
+                                    activeSection === "products" ||
+                                    activeSection === "details"
+                                        ? "active"
+                                        : ""
+                                }
+                                onClick={() => {
+                                    setActiveSection("products");
+                                    setMessage("");
+                                    setError("");
+                                }}
+                            >
+                                <span>🛍️</span>
+                                <span>Explore Products</span>
+                            </button>
+
+                            <button
+                                className={activeSection === "add" ? "active" : ""}
+                                onClick={() => {
+                                    setActiveSection("add");
+                                    setMessage("");
+                                    setError("");
+                                }}
+                            >
+                                <span>＋</span>
+                                <span>Add Product</span>
+                            </button>
+
+                            <div className="sidebar-divider"></div>
+
+                            <button
+                                className="sidebar-logout"
+                                onClick={onLogout}
+                            >
+                                <span>🚪</span>
+                                <span>Logout</span>
+                            </button>
+
+                        </aside>
+
+                    </div>
+
+                    {/* RIGHT SIDE CONTENT */}
+                    <section className="dashboard-main-content">
+
+                        {/* WELCOME MESSAGE */}
+                        <div className="welcome-section">
+                            <h1>Welcome, {user.name}! 👋</h1>
+                            <p>Manage your StudentMart account here.</p>
                         </div>
-                    )}
 
-                    <hr />
+                        {message && (
+                            <p className="dashboard-message" role="status">
+                                {message}
+                            </p>
+                        )}
 
-                    <button onClick={() => {
-                        setMessage("");
-                        setError("");
-                        setChangingPassword(!changingPassword);
-                    }}>
-                        {changingPassword
-                            ? "Cancel Password Change"
-                            : "Change Password"}
-                    </button>
+                        {error && (
+                            <p className="dashboard-error" role="alert">
+                                {error}
+                            </p>
+                        )}
 
-                    {changingPassword && (
-                        <form onSubmit={changePassword}>
+                        {/* MY PROFILE */}
+                        {activeSection === "profile" && (
+                            <div className="dashboard-card">
 
-                            <label>Current Password</label>
-                            <input
-                                type="password"
-                                value={passwordForm.currentPassword}
-                                onChange={(e) => setPasswordForm({
-                                    ...passwordForm,
-                                    currentPassword: e.target.value
-                                })}
-                                required
+                                <h2>👤 My Profile</h2>
+
+                                <div className="profile-icon">
+                                    {(user.name || "U").charAt(0).toUpperCase()}
+                                </div>
+
+                                {editing ? (
+                                    <form onSubmit={saveProfile}>
+
+                                        <label>Full Name</label>
+                                        <input
+                                            name="name"
+                                            value={form.name}
+                                            onChange={handleChange}
+                                            required
+                                        />
+
+                                        <label>Email</label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={form.email}
+                                            onChange={handleChange}
+                                            required
+                                        />
+
+                                        <label>Phone</label>
+                                        <input
+                                            type="tel"
+                                            name="phone"
+                                            value={form.phone}
+                                            onChange={handleChange}
+                                        />
+
+                                        <label>Department</label>
+                                        <input
+                                            name="department"
+                                            value={form.department}
+                                            onChange={handleChange}
+                                        />
+
+                                        <label>Year of Study</label>
+                                        <input
+                                            name="year"
+                                            value={form.year}
+                                            onChange={handleChange}
+                                        />
+
+                                        <label>Address</label>
+                                        <textarea
+                                            name="address"
+                                            value={form.address}
+                                            onChange={handleChange}
+                                        />
+
+                                        <button type="submit">
+                                            Save Changes
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setEditing(false);
+                                                setError("");
+                                                setForm({
+                                                    name: user.name || "",
+                                                    email: user.email || "",
+                                                    phone: user.phone || "",
+                                                    department: user.department || "",
+                                                    year: user.year || "",
+                                                    address: user.address || ""
+                                                });
+                                            }}
+                                        >
+                                            Cancel
+                                        </button>
+
+                                    </form>
+                                ) : (
+                                    <div className="profile-details">
+
+                                        <div className="profile-row">
+                                            <span>Name</span>
+                                            <strong>{user.name}</strong>
+                                        </div>
+
+                                        <div className="profile-row">
+                                            <span>Email</span>
+                                            <strong>{user.email}</strong>
+                                        </div>
+
+                                        <div className="profile-row">
+                                            <span>Phone</span>
+                                            <strong>{user.phone || "Not provided"}</strong>
+                                        </div>
+
+                                        <div className="profile-row">
+                                            <span>Department</span>
+                                            <strong>{user.department || "Not provided"}</strong>
+                                        </div>
+
+                                        <div className="profile-row">
+                                            <span>Year</span>
+                                            <strong>{user.year || "Not provided"}</strong>
+                                        </div>
+
+                                        <div className="profile-row">
+                                            <span>Address</span>
+                                            <strong>{user.address || "Not provided"}</strong>
+                                        </div>
+
+                                        <button onClick={() => {
+                                            setMessage("");
+                                            setError("");
+                                            setEditing(true);
+                                        }}>
+                                            Edit Profile
+                                        </button>
+
+                                    </div>
+                                )}
+
+                                <hr />
+
+                                <button onClick={() => {
+                                    setMessage("");
+                                    setError("");
+                                    setChangingPassword(!changingPassword);
+                                }}>
+                                    {changingPassword
+                                        ? "Cancel Password Change"
+                                        : "Change Password"}
+                                </button>
+
+                                {changingPassword && (
+                                    <form onSubmit={changePassword}>
+
+                                        <label>Current Password</label>
+                                        <input
+                                            type="password"
+                                            value={passwordForm.currentPassword}
+                                            onChange={(e) => setPasswordForm({
+                                                ...passwordForm,
+                                                currentPassword: e.target.value
+                                            })}
+                                            required
+                                        />
+
+                                        <label>New Password</label>
+                                        <input
+                                            type="password"
+                                            value={passwordForm.newPassword}
+                                            onChange={(e) => setPasswordForm({
+                                                ...passwordForm,
+                                                newPassword: e.target.value
+                                            })}
+                                            minLength={6}
+                                            required
+                                        />
+
+                                        <button type="submit">
+                                            Update Password
+                                        </button>
+
+                                    </form>
+                                )}
+
+                            </div>
+                        )}
+
+                        {/* EXPLORE PRODUCTS */}
+                        {activeSection === "products" && (
+                            <ProductGrid
+                                onViewDetails={(productId) => {
+                                    setSelectedProductId(productId);
+                                    setActiveSection("details");
+                                }}
                             />
+                        )}
 
-                            <label>New Password</label>
-                            <input
-                                type="password"
-                                value={passwordForm.newPassword}
-                                onChange={(e) => setPasswordForm({
-                                    ...passwordForm,
-                                    newPassword: e.target.value
-                                })}
-                                minLength={6}
-                                required
+                        {/* ADD PRODUCT */}
+                        {activeSection === "add" && (
+                            <ProductForm
+                                onProductAdded={() => setActiveSection("products")}
+                                onCancel={() => setActiveSection("products")}
                             />
+                        )}
 
-                            <button type="submit">
-                                Update Password
-                            </button>
+                        {/* PRODUCT DETAILS */}
+                        {activeSection === "details" && (
+                            <ProductDetails
+                                productId={selectedProductId}
+                                onBack={() => setActiveSection("products")}
+                            />
+                        )}
 
-                        </form>
-                    )}
+                    </section>
 
                 </div>
-)}
-                {activeSection === "products" && (
-                    <ProductGrid
-                        onViewDetails={(productId) => {
-                            setSelectedProductId(productId);
-                            setActiveSection("details");
-                        }}
-                    />
-                )}
-                {activeSection === "add" && (
-    <ProductForm
-        onProductAdded={() => setActiveSection("products")}
-        onCancel={() => setActiveSection("products")}
-    />
-)}
-{activeSection === "details" && (
-    <ProductDetails
-        productId={selectedProductId}
-        onBack={() => setActiveSection("products")}
-    />
-)}
+
             </main>
         </div>
     );
